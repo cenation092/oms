@@ -1,5 +1,6 @@
 package com.assignment.oms.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -24,6 +25,7 @@ public class ProductCategory {
     private String categoryName;
 
     @OneToMany(mappedBy = "productCategory")
+    @JsonIgnore
     private List<Product> products;
 
     @CreationTimestamp
