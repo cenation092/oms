@@ -33,6 +33,7 @@ public class ProductCategoryController {
             produces = "application/json")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK"), @ApiResponse(code = 404, message = "Not Found")})
     @RequestMapping(value = "/productCategory", method = RequestMethod.POST, produces = {APPLICATION_JSON_VALUE})
+    @PreAuthorize("hasRole('ADMIN')")
     public ProductCategory newCategory(@RequestBody ProductCategory newProductCategory){
         return adminService.newCategory(newProductCategory);
     }
@@ -43,6 +44,7 @@ public class ProductCategoryController {
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK"), @ApiResponse(code = 404, message = "Not Found")})
     @RequestMapping(value = "/productCategory/{productCategoryId}", method = RequestMethod.PUT, produces =
             {APPLICATION_JSON_VALUE})
+    @PreAuthorize("hasRole('ADMIN')")
     public ProductCategory updateCategory(@RequestBody ProductCategory newCategory, @PathVariable("productCategoryId")
             Long productCategoryId ){
         return adminService.updateCategory(productCategoryId, newCategory);
@@ -54,6 +56,7 @@ public class ProductCategoryController {
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK"), @ApiResponse(code = 404, message = "Not Found")})
     @RequestMapping(value = "/productCategory/{productCategoryId}", method = RequestMethod.DELETE, produces =
             {APPLICATION_JSON_VALUE})
+    @PreAuthorize("hasRole('ADMIN')")
     public void deleteCategory(@PathVariable("productCategoryId") Long productCategoryId ){
         adminService.deleteCategory(productCategoryId);
     }

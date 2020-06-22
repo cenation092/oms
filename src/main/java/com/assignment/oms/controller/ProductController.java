@@ -12,6 +12,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,28 +30,17 @@ public class ProductController {
             produces = "application/json")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK"), @ApiResponse(code = 404, message = "Not Found")})
     @RequestMapping(value = "/product", method = RequestMethod.GET, produces = {APPLICATION_JSON_VALUE})
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     public ProductResponseVO all(){
         return adminUserService.all();
     }
-
-//    @GetMapping("/product/{query}/{productId}")
-//    public Long anyQuery(@PathVariable Long productId, @PathVariable String query ) {
-//        return productRepository.findById(productId)
-//                .map(product -> {
-//                    if (query.equals("price")) {
-//                        return product.getPrice();
-//                    } else {
-//                        return product.getStockUnits();
-//                    }
-//                })
-//                .orElseThrow(() -> new NotFoundException("Category not found"));
-//    }
 
     @ApiOperation(value = "Add new product",
             notes = "Add new product", response = Product.class,
             produces = "application/json")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK"), @ApiResponse(code = 404, message = "Not Found")})
     @RequestMapping(value = "/product", method = RequestMethod.POST, produces = {APPLICATION_JSON_VALUE})
+    @PreAuthorize("hasRole('ADMIN')")
     public Product addProduct(@RequestBody Product newProduct){
         return adminUserService.addProduct(newProduct);
     }
@@ -60,6 +50,7 @@ public class ProductController {
             produces = "application/json")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK"), @ApiResponse(code = 404, message = "Not Found")})
     @RequestMapping(value = "/product/{productId}", method = RequestMethod.PUT, produces = {APPLICATION_JSON_VALUE})
+    @PreAuthorize("hasRole('ADMIN')")
     public Product updateProduct(@PathVariable("productId") Long productId, @RequestBody UpdateProductRequestVO
             updateProductRequestVO) {
         return adminUserService.updateProduct(productId, updateProductRequestVO);
@@ -70,6 +61,7 @@ public class ProductController {
             produces = "application/json")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK"), @ApiResponse(code = 404, message = "Not Found")})
     @RequestMapping(value = "/product/{productId}", method = RequestMethod.DELETE, produces = {APPLICATION_JSON_VALUE})
+    @PreAuthorize("hasRole('ADMIN')")
     public void deleteProduct(@PathVariable Long productId){
         adminUserService.deleteProduct(productId);
     }
