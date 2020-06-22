@@ -1,5 +1,6 @@
 package com.assignment.oms.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -7,27 +8,40 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.util.*;
 
 @Data
 @Entity
 @NoArgsConstructor
-@Table(name="users")
-public class User {
+@Table(name = "users", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"username"}),
+        @UniqueConstraint(columnNames = {"email"})
+})
+public class User{
     @Id
-    @GeneratedValue
-    @Column(name = "user_id")
-    private Long userId;
-
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     @NonNull
     private String name;
-
     @NonNull
-    @Column(name = "email_id", unique = true)
-    private String emailId;
-
+    private String username;
     @NonNull
-    private Role role;
+    private String email;
+    @NonNull
+    private String password;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles = new HashSet<>();
+
+    public User(String name, String username, String email, String password) {
+        this.name = name;
+        this.username = username;
+        this.email = email;
+        this.password = password;
+    }
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)

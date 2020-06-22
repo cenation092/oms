@@ -1,42 +1,61 @@
 package com.assignment.oms.controller;
 
+import com.assignment.oms.dto.ProductCategoryResponseVO;
 import com.assignment.oms.model.ProductCategory;
-import com.assignment.oms.repository.ProductCategoryRepository;
-import com.assignment.oms.exceptions.NotFoundException;
+import com.assignment.oms.services.AdminService;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
 public class ProductCategoryController {
 
     @Autowired
-    private ProductCategoryRepository productCategoryRepository;
+    private AdminService adminService;
 
-    @GetMapping("/product-category")
-    public List<ProductCategory> all(){
-        return productCategoryRepository.findAll();
+    @ApiOperation(value = "Get all product categories",
+            notes = "Get all product categories", response = ProductCategoryResponseVO.class,
+            produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK"), @ApiResponse(code = 404, message = "Not Found")})
+    @RequestMapping(value = "/productCategory", method = RequestMethod.GET, produces = {APPLICATION_JSON_VALUE})
+    @PreAuthorize("hasRole('ADMIN')")
+    public ProductCategoryResponseVO all(){
+        return adminService.all();
     }
 
-    @PostMapping("/product-category")
+    @ApiOperation(value = "Add new product category",
+            notes = "Add new product category", response = ProductCategory.class,
+            produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK"), @ApiResponse(code = 404, message = "Not Found")})
+    @RequestMapping(value = "/productCategory", method = RequestMethod.POST, produces = {APPLICATION_JSON_VALUE})
     public ProductCategory newCategory(@RequestBody ProductCategory newProductCategory){
-        return productCategoryRepository.save(newProductCategory);
+        return adminService.newCategory(newProductCategory);
     }
 
-    @PutMapping("/product-category/{productCategoryId}")
-    public ProductCategory updateCategory(@RequestBody ProductCategory newCategory, @PathVariable Long productCategoryId ){
-        return productCategoryRepository.findById(productCategoryId)
-                .map( product -> {
-                    product.setCategoryName(newCategory.getCategoryName());
-                    return productCategoryRepository.save(product);
-                })
-                .orElseThrow(() -> new NotFoundException("Category not found"));
+    @ApiOperation(value = "Update existing product category",
+            notes = "Update existing product category", response = ProductCategory.class,
+            produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK"), @ApiResponse(code = 404, message = "Not Found")})
+    @RequestMapping(value = "/productCategory/{productCategoryId}", method = RequestMethod.PUT, produces =
+            {APPLICATION_JSON_VALUE})
+    public ProductCategory updateCategory(@RequestBody ProductCategory newCategory, @PathVariable("productCategoryId")
+            Long productCategoryId ){
+        return adminService.updateCategory(productCategoryId, newCategory);
     }
 
-    @DeleteMapping("/product-category/{productCategoryId}")
-    public void deleteCategory(@PathVariable Long productCategoryId ){
-        productCategoryRepository.deleteById(productCategoryId);
+    @ApiOperation(value = "Delete existing product category",
+            notes = "Delete existing product category", response = void.class,
+            produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK"), @ApiResponse(code = 404, message = "Not Found")})
+    @RequestMapping(value = "/productCategory/{productCategoryId}", method = RequestMethod.DELETE, produces =
+            {APPLICATION_JSON_VALUE})
+    public void deleteCategory(@PathVariable("productCategoryId") Long productCategoryId ){
+        adminService.deleteCategory(productCategoryId);
     }
 
 }
