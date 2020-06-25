@@ -1,5 +1,6 @@
 package com.assignment.oms.controller;
 
+import com.assignment.oms.dto.GetProductRequestVO;
 import com.assignment.oms.dto.ProductCategoryResponseVO;
 import com.assignment.oms.dto.ProductResponseVO;
 import com.assignment.oms.dto.UpdateProductRequestVO;
@@ -8,9 +9,7 @@ import com.assignment.oms.model.Product;
 import com.assignment.oms.model.ProductCategory;
 import com.assignment.oms.repository.ProductRepository;
 import com.assignment.oms.services.AdminUserService;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -29,16 +28,35 @@ public class ProductController {
             notes = "Get all products", response = ProductResponseVO.class,
             produces = "application/json")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK"), @ApiResponse(code = 404, message = "Not Found")})
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "Authorization token",
+                    required = true, dataType = "string", paramType = "header") })
     @RequestMapping(value = "/product", method = RequestMethod.GET, produces = {APPLICATION_JSON_VALUE})
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     public ProductResponseVO all(){
         return adminUserService.all();
     }
 
+    @ApiOperation(value = "Get price or stocks",
+            notes = "Get price or stocks availablity", response = ProductResponseVO.class,
+            produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK"), @ApiResponse(code = 404, message = "Not Found")})
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "Authorization token",
+                    required = true, dataType = "string", paramType = "header") })
+    @RequestMapping(value = "/product/query", method = RequestMethod.POST, produces = {APPLICATION_JSON_VALUE})
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
+    public String anyQuery(@RequestBody GetProductRequestVO newQuery){
+        return adminUserService.anyQuery(newQuery);
+    }
+
     @ApiOperation(value = "Add new product",
             notes = "Add new product", response = Product.class,
             produces = "application/json")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK"), @ApiResponse(code = 404, message = "Not Found")})
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "Authorization token",
+                    required = true, dataType = "string", paramType = "header") })
     @RequestMapping(value = "/product", method = RequestMethod.POST, produces = {APPLICATION_JSON_VALUE})
     @PreAuthorize("hasRole('ADMIN')")
     public Product addProduct(@RequestBody Product newProduct){
@@ -49,6 +67,9 @@ public class ProductController {
             notes = "Update existing product", response = Product.class,
             produces = "application/json")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK"), @ApiResponse(code = 404, message = "Not Found")})
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "Authorization token",
+                    required = true, dataType = "string", paramType = "header") })
     @RequestMapping(value = "/product/{productId}", method = RequestMethod.PUT, produces = {APPLICATION_JSON_VALUE})
     @PreAuthorize("hasRole('ADMIN')")
     public Product updateProduct(@PathVariable("productId") Long productId, @RequestBody UpdateProductRequestVO
@@ -60,6 +81,9 @@ public class ProductController {
             notes = "Delete existing product", response = void.class,
             produces = "application/json")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK"), @ApiResponse(code = 404, message = "Not Found")})
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "Authorization token",
+                    required = true, dataType = "string", paramType = "header") })
     @RequestMapping(value = "/product/{productId}", method = RequestMethod.DELETE, produces = {APPLICATION_JSON_VALUE})
     @PreAuthorize("hasRole('ADMIN')")
     public void deleteProduct(@PathVariable Long productId){

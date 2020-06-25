@@ -8,9 +8,7 @@
         <datasource-mapping>
           <factory-entry name="entityManagerFactory" />
         </datasource-mapping>
-        <naming-strategy-map>
-          <unit-entry name="entityManagerFactory" />
-        </naming-strategy-map>
+        <naming-strategy-map />
       </configuration>
     </facet>
     <facet type="Spring" name="Spring">

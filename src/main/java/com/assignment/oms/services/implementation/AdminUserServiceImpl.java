@@ -1,5 +1,6 @@
 package com.assignment.oms.services.implementation;
 
+import com.assignment.oms.dto.GetProductRequestVO;
 import com.assignment.oms.dto.ProductCategoryResponseVO;
 import com.assignment.oms.dto.ProductResponseVO;
 import com.assignment.oms.dto.UpdateProductRequestVO;
@@ -25,13 +26,19 @@ public class AdminUserServiceImpl implements AdminUserService {
         return ProductResponseVO.builder().productList(productRepositoryAll).build();
     }
 
-    public Long anyQuery(Long productId, String query ) {
-        return productRepository.findById(productId)
+    public String anyQuery(GetProductRequestVO info) {
+        return productRepository.findById(info.getId())
             .map(product -> {
-                if (query.equals("price")) {
-                    return product.getPrice();
+                if (info.getQuery().equals("price")) {
+                    Long val = product.getPrice();
+                    String queryResponse = "Price = ";
+                    queryResponse = queryResponse.concat(val.toString());
+                    return queryResponse;
                 } else {
-                    return product.getStockUnits();
+                    Long val = product.getStockUnits();
+                    String queryResponse = "Stock Availability = ";
+                    queryResponse = queryResponse.concat(val.toString());
+                    return queryResponse;
                 }
             })
             .orElseThrow(() -> new NotFoundException("Category not found"));

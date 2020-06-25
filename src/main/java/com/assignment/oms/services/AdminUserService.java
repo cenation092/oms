@@ -1,5 +1,6 @@
 package com.assignment.oms.services;
 
+import com.assignment.oms.dto.GetProductRequestVO;
 import com.assignment.oms.dto.ProductResponseVO;
 import com.assignment.oms.dto.UpdateProductRequestVO;
 import com.assignment.oms.exceptions.NotFoundException;
@@ -14,7 +15,7 @@ public interface AdminUserService {
 
     public ProductResponseVO all();
 
-    public Long anyQuery(Long productId, String query );
+    public String anyQuery(GetProductRequestVO info);
 
     public Product addProduct(Product newProduct);
 
