@@ -27,4 +27,16 @@ public class UserContoller {
         userRepository.deleteById(userId);
     }
 
+    @ApiOperation(value = "Get user",
+            notes = "Delete existing user account", response = void.class,
+            produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK"), @ApiResponse(code = 404, message = "Not Found")})
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "Authorization token",
+                    required = true, dataType = "string", paramType = "header") })
+    @RequestMapping(value = "/userid", method = RequestMethod.DELETE, produces = {APPLICATION_JSON_VALUE})
+    @PreAuthorize("hasRole('ADMIN')")
+    public void removeUser(){
+
+    }
 }
